@@ -3,123 +3,118 @@ const oracledb = require('oracledb');
 const cors = require('cors');
 
 oracledb.initOracleClient({ libDir: 'C:\\oracle_client' });
-
 const app = express();
 
 app.use(cors());
 app.use(express.json());
 
 const dbConfig = {
-    user: 'ldprogram2', // o BASE2 según donde creaste tablas
+    user: 'ldprogram2',
     password: '132',
     connectString: 'localhost/xe'
 };
 
-app.get('/', (req, res) => {
-    res.send('Servidor funcionando correctamente');
-});
-
-app.get('/test-db', async (req, res) => {
-    try {
-        const connection = await oracledb.getConnection(dbConfig);
-
-        const result = await connection.execute('SELECT * FROM TipoPersona');
-
-        await connection.close();
-
-        res.json(result.rows);
-    } catch (error) {
-        console.error("ERROR REAL:", error);
-        res.status(500).send(error.message);
-    }
-});
-
+// --- RUTA: LEER ---
 app.get('/tipopersona', async (req, res) => {
+    let connection;
     try {
-        const connection = await oracledb.getConnection(dbConfig);
-
+        connection = await oracledb.getConnection(dbConfig);
         const result = await connection.execute(
-            'SELECT * FROM TipoPersona',
+            'SELECT * FROM TipoPersona ORDER BY idTipoPersona ASC',
             [],
             { outFormat: oracledb.OUT_FORMAT_OBJECT }
         );
-
-        await connection.close();
-
         res.json(result.rows);
     } catch (error) {
-        console.error(error);
         res.status(500).send(error.message);
+    } finally {
+        if (connection) await connection.close();
     }
 });
 
+// --- RUTA: CREAR (ARREGLADA) ---
 app.post('/tipopersona', async (req, res) => {
-    const { id, descripcion } = req.body;
+    const { descripcion } = req.body;
+    if (!descripcion) return res.status(400).send('Descripción requerida');
 
+    let connection;
     try {
-        const connection = await oracledb.getConnection(dbConfig);
-
+        connection = await oracledb.getConnection(dbConfig);
+        // Arreglo: Insertamos el ID calculando el máximo + 1
         await connection.execute(
-            `INSERT INTO TipoPersona (idTipoPersona, descripcion)
-             VALUES (:id, :descripcion)`,
-            { id, descripcion },
+            `INSERT INTO TipoPersona (idTipoPersona, descripcion) 
+             VALUES ((SELECT NVL(MAX(idTipoPersona), 0) + 1 FROM TipoPersona), :descripcion)`,
+            { descripcion },
             { autoCommit: true }
         );
-
-        await connection.close();
-
-        res.send('TipoPersona creado');
+        res.status(201).send('Creado correctamente');
     } catch (error) {
-        console.error(error);
         res.status(500).send(error.message);
+    } finally {
+        if (connection) await connection.close();
     }
 });
 
+// --- RUTA: EDITAR ---
 app.put('/tipopersona/:id', async (req, res) => {
     const { descripcion } = req.body;
-    const id = req.params.id;
+    const { id } = req.params;
 
+    let connection;
     try {
-        const connection = await oracledb.getConnection(dbConfig);
-
-        await connection.execute(
-            `UPDATE TipoPersona 
-             SET descripcion = :descripcion
-             WHERE idTipoPersona = :id`,
+        connection = await oracledb.getConnection(dbConfig);
+        const result = await connection.execute(
+            `UPDATE TipoPersona SET descripcion = :descripcion WHERE idTipoPersona = :id`,
             { descripcion, id },
             { autoCommit: true }
         );
-
-        await connection.close();
-
-        res.send('TipoPersona actualizado');
+        if (result.rowsAffected === 0) return res.status(404).send('ID no encontrado');
+        res.send('Actualizado correctamente');
     } catch (error) {
-        console.error(error);
         res.status(500).send(error.message);
+    } finally {
+        if (connection) await connection.close();
     }
 });
 
+// --- RUTA: ELIMINAR ---
 app.delete('/tipopersona/:id', async (req, res) => {
-    const id = req.params.id;
-
+    const { id } = req.params;
+    let connection;
     try {
-        const connection = await oracledb.getConnection(dbConfig);
-
-        await connection.execute(
+        connection = await oracledb.getConnection(dbConfig);
+        const result = await connection.execute(
             `DELETE FROM TipoPersona WHERE idTipoPersona = :id`,
             { id },
             { autoCommit: true }
         );
-
-        await connection.close();
-
-        res.send('TipoPersona eliminado');
+        if (result.rowsAffected === 0) return res.status(404).send('ID no encontrado');
+        res.send('Eliminado correctamente');
     } catch (error) {
-        console.error(error);
         res.status(500).send(error.message);
+    } finally {
+        if (connection) await connection.close();
     }
 });
 
-app.listen(5000, () => {
-    console.log('Servidor corriendo en http://localhost:5000');
+// --- LOGIN (YA ESTABA BIEN) ---
+app.post('/login', async (req, res) => {
+    const { nombreUsuario, clave } = req.body;
+    let connection;
+    try {
+        connection = await oracledb.getConnection(dbConfig);
+        const result = await connection.execute(
+            `SELECT IDUSUARIO, NOMBREUSUARIO, IDPERFIL FROM Usuario WHERE NOMBREUSUARIO = :nombreUsuario AND CLAVE = :clave`,
+            { nombreUsuario, clave }, 
+            { outFormat: oracledb.OUT_FORMAT_OBJECT }
+        );
+        if (result.rows.length > 0) res.json(result.rows[0]); 
+        else res.status(401).json({ mensaje: 'Credenciales incorrectas' });
+    } catch (error) {
+        res.status(500).json({ mensaje: 'Error interno' });
+    } finally {
+        if (connection) await connection.close();
+    }
 });
+
+app.listen(5000, () => console.log('Servidor en http://localhost:5000'));
