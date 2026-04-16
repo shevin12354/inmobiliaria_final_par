@@ -1,8 +1,10 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import './index.css';
+import './styles/index.css'; // 👈 CAMBIO 1: Agregamos /styles/
 import App from './App';
-import reportWebVitals from './reportWebVitals';
+
+// Como vamos a limpiar el proyecto para el profe, 
+// borramos la referencia a reportWebVitals que no usaremos.
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -10,8 +12,3 @@ root.render(
     <App />
   </React.StrictMode>
 );
-
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals();

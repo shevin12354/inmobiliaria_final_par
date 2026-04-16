@@ -1,0 +1,208 @@
+/* ===== RESET ===== */
+* {
+  box-sizing: border-box;
+}
+
+
+/* ===== BODY ===== */
+body {
+  margin: 0;
+  font-family: 'Segoe UI', Roboto, sans-serif;
+  background: linear-gradient(135deg, #eef2ff, #f8fafc);
+  color: #1e293b;
+  -webkit-font-smoothing: antialiased;
+}
+
+
+/* ===== LAYOUT ===== */
+.App {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  min-height: 100vh;
+  padding: 60px 20px;
+}
+
+
+/* ===== CONTENEDOR ===== */
+.container {
+  background: #ffffff;
+  padding: 45px;
+  border-radius: 20px;
+  box-shadow: 
+    0 20px 40px rgba(0,0,0,0.08),
+    0 5px 15px rgba(0,0,0,0.05);
+  width: 100%;
+  max-width: 950px;
+  border: 1px solid rgba(0,0,0,0.04);
+  transition: all 0.25s ease;
+}
+
+.container:hover {
+  transform: translateY(-3px);
+}
+
+
+/* ===== TITULOS ===== */
+h1 {
+  text-align: center;
+  margin-bottom: 35px;
+  font-weight: 700;
+  font-size: 28px;
+  color: #0f172a;
+}
+
+h3 {
+  margin-top: 35px;
+  margin-bottom: 15px;
+  padding-left: 14px;
+  border-left: 5px solid #6366f1;
+  color: #334155;
+}
+
+
+/* ===== FORM ===== */
+.grid-form {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
+  margin-bottom: 25px;
+}
+
+.grid-form button {
+  grid-column: span 2;
+}
+
+
+/* ===== INPUTS ===== */
+input {
+  padding: 13px;
+  border-radius: 10px;
+  border: 1px solid #e2e8f0;
+  background: #f8fafc;
+  color: #0f172a;
+  font-size: 15px;
+  transition: all 0.25s ease;
+}
+
+input::placeholder {
+  color: #94a3b8;
+}
+
+input:focus {
+  outline: none;
+  border-color: #6366f1;
+  background: #ffffff;
+  box-shadow: 0 0 0 3px rgba(99,102,241,0.2);
+}
+
+
+/* ===== BOTONES ===== */
+button {
+  padding: 12px 18px;
+  border-radius: 10px;
+  border: none;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+/* PRINCIPAL */
+button[type="submit"] {
+  background: linear-gradient(135deg, #6366f1, #4f46e5);
+  color: white;
+  box-shadow: 0 8px 20px rgba(99,102,241,0.3);
+}
+
+button[type="submit"]:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 25px rgba(99,102,241,0.4);
+}
+
+
+/* EDITAR */
+.btn-edit {
+  background: #eef2ff;
+  color: #3730a3;
+  border: 1px solid #c7d2fe;
+}
+
+.btn-edit:hover {
+  background: #e0e7ff;
+}
+
+
+/* ELIMINAR */
+.btn-delete {
+  background: #fef2f2;
+  color: #b91c1c;
+  border: 1px solid #fecaca;
+}
+
+.btn-delete:hover {
+  background: #fee2e2;
+}
+
+
+/* ===== TABLA ===== */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #ffffff;
+}
+
+th {
+  background: #f1f5f9;
+  padding: 15px;
+  text-align: left;
+  border-bottom: 2px solid #6366f1;
+  color: #334155;
+}
+
+td {
+  padding: 14px;
+  border-bottom: 1px solid #e2e8f0;
+  color: #1e293b;
+}
+
+tr:hover td {
+  background: #f8fafc;
+}
+
+
+/* ===== SCROLL ===== */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #cbd5f5;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #a5b4fc;
+}
+
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 600px) {
+  .container {
+    padding: 25px;
+  }
+
+  .grid-form {
+    grid-template-columns: 1fr;
+  }
+
+  .grid-form button {
+    grid-column: span 1;
+  }
+
+  h1 {
+    font-size: 22px;
+  }
+}

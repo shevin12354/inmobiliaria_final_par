@@ -1,0 +1,86 @@
+/* ===== RESET MODERNO ===== */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+
+/* ===== BASE DEL BODY ===== */
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto',
+    'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+
+  background: linear-gradient(135deg, #eef2f7, #dfe6f1);
+  color: #1a1a1a;
+
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
+  line-height: 1.6;
+}
+
+
+/* ===== TIPOGRAFÍA GLOBAL ===== */
+h1, h2, h3, h4, h5, h6 {
+  font-weight: 600;
+  color: #111;
+}
+
+p {
+  color: #444;
+  font-size: 15px;
+}
+
+
+/* ===== LINKS ===== */
+a {
+  color: #28a745;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+a:hover {
+  color: #1e7e34;
+}
+
+
+/* ===== CÓDIGO ===== */
+code {
+  font-family: 'Fira Code', Menlo, Monaco, Consolas, 'Courier New', monospace;
+  background: #f4f6f9;
+  padding: 3px 6px;
+  border-radius: 6px;
+  font-size: 14px;
+}
+
+
+/* ===== SCROLL BONITO ===== */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #cfcfcf;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #999;
+}
+
+
+/* ===== SELECCIÓN DE TEXTO ===== */
+::selection {
+  background: rgba(40,167,69,0.2);
+  color: #000;
+}
+
+
+/* ===== TRANSICIONES SUAVES GLOBALES ===== */
+button, input, a {
+  transition: all 0.2s ease;
+}
