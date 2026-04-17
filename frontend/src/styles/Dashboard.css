@@ -1,0 +1,65 @@
+.dashboard {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.dashboard-title {
+  font-size: 22px;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+/* ===== CARDS SUPERIORES ===== */
+.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 20px;
+}
+
+.card-stat {
+  background: white;
+  padding: 20px;
+  border-radius: 16px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+  transition: 0.2s;
+}
+
+.card-stat:hover {
+  transform: translateY(-4px);
+}
+
+.card-stat h3 {
+  font-size: 14px;
+  color: #64748b;
+}
+
+.number {
+  font-size: 28px;
+  font-weight: 700;
+  color: #6366f1;
+  margin: 10px 0;
+}
+
+.label {
+  font-size: 13px;
+  color: #94a3b8;
+}
+
+
+/* ===== PARTE INFERIOR ===== */
+.dashboard-bottom {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 20px;
+}
+
+.activity {
+  margin-top: 10px;
+  list-style: none;
+}
+
+.activity li {
+  margin-bottom: 8px;
+  color: #334155;
+}

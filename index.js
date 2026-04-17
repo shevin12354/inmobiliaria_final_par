@@ -14,6 +14,27 @@ const dbConfig = {
     connectString: 'localhost/xe'
 };
 
+// --- OBTENER INGRESOS TOTALES ---
+app.get('/ingresos', async (req, res) => {
+    let conn;
+    try {
+        conn = await oracledb.getConnection(dbConfig);
+
+        const result = await conn.execute(
+            `SELECT NVL(SUM(valorMensual), 0) AS TOTAL FROM CONTRATO`,
+            [],
+            { outFormat: oracledb.OUT_FORMAT_OBJECT }
+        );
+
+        res.json(result.rows[0]);
+
+    } catch (e) {
+        res.status(500).send("Error: " + e.message);
+    } finally {
+        if (conn) await conn.close();
+    }
+});
+
 // --- RUTA: LEER ---
 app.get('/tipopersona', async (req, res) => {
     let connection;

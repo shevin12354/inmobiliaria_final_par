@@ -1,4 +1,4 @@
-/* ===== RESET MODERNO ===== */
+/* ===== RESET PROFESIONAL ===== */
 *,
 *::before,
 *::after {
@@ -8,14 +8,49 @@
 }
 
 
-/* ===== BASE DEL BODY ===== */
-body {
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto',
-    'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
+/* ===== VARIABLES DE DISEÑO (SISTEMA REAL) ===== */
+:root {
 
-  background: linear-gradient(135deg, #eef2f7, #dfe6f1);
-  color: #1a1a1a;
+  /* 🎨 PALETA */
+  --primary: #6366f1;
+  --primary-strong: #4f46e5;
+  --primary-soft: #eef2ff;
+
+  --accent: #22c55e;
+  --accent-soft: #ecfdf5;
+
+  --danger: #ef4444;
+
+  /* 🧠 TEXTO */
+  --text-main: #0f172a;
+  --text-secondary: #334155;
+  --text-muted: #64748b;
+
+  /* 🧱 FONDOS */
+  --bg-main: #f8fafc;
+  --bg-soft: #f1f5f9;
+
+  /* 📏 BORDES */
+  --border: #e2e8f0;
+
+  /* 🌫 SOMBRAS */
+  --shadow-xs: 0 2px 6px rgba(0,0,0,0.04);
+  --shadow-sm: 0 6px 20px rgba(0,0,0,0.06);
+  --shadow-md: 0 12px 30px rgba(0,0,0,0.08);
+  --shadow-lg: 0 20px 45px rgba(0,0,0,0.12);
+}
+
+
+/* ===== BODY ULTRA PRO ===== */
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+
+  background:
+    radial-gradient(circle at 15% 15%, rgba(99,102,241,0.18), transparent 35%),
+    radial-gradient(circle at 85% 85%, rgba(34,197,94,0.12), transparent 35%),
+    linear-gradient(135deg, #eef2ff, #f8fafc);
+
+  color: var(--text-main);
 
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -24,63 +59,142 @@ body {
 }
 
 
-/* ===== TIPOGRAFÍA GLOBAL ===== */
+/* ===== TIPOGRAFÍA NIVEL PREMIUM ===== */
 h1, h2, h3, h4, h5, h6 {
-  font-weight: 600;
-  color: #111;
+  font-weight: 700;
+  color: var(--text-main);
+  letter-spacing: -0.4px;
+}
+
+h1 {
+  font-size: 28px;
+}
+
+h2 {
+  font-size: 21px;
+}
+
+h3 {
+  font-size: 17px;
 }
 
 p {
-  color: #444;
+  color: var(--text-secondary);
   font-size: 15px;
 }
 
 
 /* ===== LINKS ===== */
 a {
-  color: #28a745;
+  color: var(--primary);
   text-decoration: none;
-  transition: color 0.2s ease;
+  font-weight: 500;
 }
 
 a:hover {
-  color: #1e7e34;
+  color: var(--primary-strong);
 }
 
 
-/* ===== CÓDIGO ===== */
+/* ===== BLOQUES DE CÓDIGO ===== */
 code {
-  font-family: 'Fira Code', Menlo, Monaco, Consolas, 'Courier New', monospace;
-  background: #f4f6f9;
-  padding: 3px 6px;
-  border-radius: 6px;
-  font-size: 14px;
+  font-family: 'Fira Code', monospace;
+  background: var(--bg-soft);
+  padding: 4px 8px;
+  border-radius: 8px;
+  font-size: 13px;
 }
 
 
-/* ===== SCROLL BONITO ===== */
+/* ===== INPUTS BASE ===== */
+input,
+textarea,
+select {
+  font-family: inherit;
+  color: var(--text-main);
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: var(--text-muted);
+}
+
+
+/* ===== BOTONES BASE ===== */
+button {
+  font-family: inherit;
+  letter-spacing: 0.3px;
+}
+
+
+/* ===== SELECCIÓN ===== */
+::selection {
+  background: rgba(99,102,241,0.25);
+  color: var(--text-main);
+}
+
+
+/* ===== SCROLL PREMIUM ===== */
 ::-webkit-scrollbar {
   width: 8px;
 }
 
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
 ::-webkit-scrollbar-thumb {
-  background: #cfcfcf;
+  background: linear-gradient(180deg, #a5b4fc, #60a5fa);
   border-radius: 10px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #999;
+  background: linear-gradient(180deg, #818cf8, #3b82f6);
 }
 
 
-/* ===== SELECCIÓN DE TEXTO ===== */
-::selection {
-  background: rgba(40,167,69,0.2);
-  color: #000;
-}
-
-
-/* ===== TRANSICIONES SUAVES GLOBALES ===== */
-button, input, a {
+/* ===== TRANSICIONES ===== */
+button,
+input,
+textarea,
+select,
+a {
   transition: all 0.2s ease;
+}
+
+
+/* ===== EFECTOS PRO ===== */
+
+/* enfoque accesible bonito */
+:focus-visible {
+  outline: 2px solid rgba(99,102,241,0.5);
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+
+/* mejora botones en móvil */
+button {
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* imágenes limpias */
+img {
+  max-width: 100%;
+  display: block;
+}
+
+/* scroll suave */
+html {
+  scroll-behavior: smooth;
+}
+
+
+/* ===== DETALLE TOP (EL QUE CASI NADIE PONE) ===== */
+/* mejora percepción visual global */
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(circle, transparent 60%, rgba(0,0,0,0.03));
 }

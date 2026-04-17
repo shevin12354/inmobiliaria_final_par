@@ -1,7 +1,6 @@
 import { useState } from "react";
 
 const Login = ({ onLoginSuccess }) => {
-  // Ajustamos el nombre de la variable a 'nombreUsuario' para que coincida con el backend
   const [nombreUsuario, setNombreUsuario] = useState("");
   const [clave, setClave] = useState("");
 
@@ -12,7 +11,6 @@ const Login = ({ onLoginSuccess }) => {
         headers: {
           "Content-Type": "application/json",
         },
-        // Enviamos 'nombreUsuario' que es lo que espera tu ruta app.post('/login')
         body: JSON.stringify({ nombreUsuario, clave }),
       });
 
@@ -22,7 +20,6 @@ const Login = ({ onLoginSuccess }) => {
       }
 
       const data = await res.json();
-      // Si el login es exitoso, pasamos los datos del usuario al App.js
       onLoginSuccess(data);
 
     } catch (error) {
@@ -32,22 +29,36 @@ const Login = ({ onLoginSuccess }) => {
   };
 
   return (
-    <div style={{ padding: "50px", textAlign: "center" }}>
-      <h2>Inmobiliaria - Acceso</h2>
-      <input
-        placeholder="Nombre de Usuario"
-        value={nombreUsuario}
-        onChange={(e) => setNombreUsuario(e.target.value)}
-      />
-      <br /><br />
-      <input
-        type="password"
-        placeholder="Clave"
-        value={clave}
-        onChange={(e) => setClave(e.target.value)}
-      />
-      <br /><br />
-      <button onClick={login}>Ingresar</button>
+    <div className="login-wrapper">
+
+      <div className="login-card">
+
+        {/* LOGO / TITULO */}
+        <h2>🏢 Inmobiliaria</h2>
+        <p className="login-subtitle">Acceso al sistema</p>
+
+        {/* INPUT USUARIO */}
+        <input
+          placeholder="Nombre de Usuario"
+          value={nombreUsuario}
+          onChange={(e) => setNombreUsuario(e.target.value)}
+        />
+
+        {/* INPUT PASSWORD */}
+        <input
+          type="password"
+          placeholder="Clave"
+          value={clave}
+          onChange={(e) => setClave(e.target.value)}
+        />
+
+        {/* BOTON */}
+        <button onClick={login}>
+          Ingresar
+        </button>
+
+      </div>
+
     </div>
   );
 };
