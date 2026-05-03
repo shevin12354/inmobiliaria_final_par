@@ -2,81 +2,82 @@ import React, { useEffect, useState } from "react";
 import "../styles/Dashboard.css";
 
 const Dashboard = () => {
-
   const [stats, setStats] = useState({
     apt: 0,
     cont: 0,
     clientes: 0
   });
-
   const [ingresos, setIngresos] = useState(0);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchStats = async () => {
       try {
-        const apt = await fetch("http://localhost:5000/apartamento");
-        const cont = await fetch("http://localhost:5000/contrato");
-        const cli = await fetch("http://localhost:5000/cliente");
-        const ing = await fetch("http://localhost:5000/ingresos");
+        setLoading(true);
+        // Promise.all lanza todas las peticiones al mismo tiempo
+        const [resApt, resCont, resCli, resIng] = await Promise.all([
+          fetch("http://localhost:5000/apartamento"),
+          fetch("http://localhost:5000/contrato"),
+          fetch("http://localhost:5000/cliente"),
+          fetch("http://localhost:5000/ingresos")
+        ]);
 
-        const dataApt = await apt.json();
-        const dataCont = await cont.json();
-        const dataCli = await cli.json();
-        const dataIng = await ing.json();
+        const dataApt = await resApt.json();
+        const dataCont = await resCont.json();
+        const dataCli = await resCli.json();
+        const dataIng = await resIng.json();
 
         setStats({
-          apt: dataApt.length,
-          cont: dataCont.length,
-          clientes: dataCli.length
+          apt: Array.isArray(dataApt) ? dataApt.length : 0,
+          cont: Array.isArray(dataCont) ? dataCont.length : 0,
+          clientes: Array.isArray(dataCli) ? dataCli.length : 0
         });
 
-        setIngresos(dataIng.TOTAL);
+        // Validamos que TOTAL exista, si es un array tomamos el primer índice
+        const totalCalculado = Array.isArray(dataIng) ? dataIng[0]?.TOTAL : dataIng?.TOTAL;
+        setIngresos(totalCalculado || 0);
 
       } catch (error) {
-        console.error("Error cargando estadísticas", error);
+        console.error("Error cargando estadísticas:", error);
+      } finally {
+        setLoading(false);
       }
     };
 
     fetchStats();
   }, []);
 
+  if (loading) return <div className="loading-dash">Cargando datos del sistema...</div>;
+
   return (
     <div className="dashboard">
-
-      <h2 className="dashboard-title">Panel General</h2>
+      <h2 className="dashboard-title">Resumen Operativo</h2>
 
       <div className="cards">
-
-        <div className="card-stat">
-          <h3>🏢 Apartamentos</h3>
-          <p className="number">{stats.apt}</p>
-          <span className="label">Registrados</span>
-        </div>
-
-        <div className="card-stat">
-          <h3>📄 Contratos</h3>
-          <p className="number">{stats.cont}</p>
-          <span className="label">Activos</span>
-        </div>
-
-        <div className="card-stat">
-          <h3>👥 Clientes</h3>
-          <p className="number">{stats.clientes}</p>
-          <span className="label">Totales</span>
-        </div>
-
-        <div className="card-stat">
-          <h3>💰 Ingresos</h3>
-          <p className="number">
-            ${ingresos.toLocaleString('es-CO')}
-          </p>
-          <span className="label">Total generado</span>
-        </div>
-
+        <StatCard title="Apartamentos" icon="🏢" value={stats.apt} label="Registrados" />
+        <StatCard title="Contratos" icon="📄" value={stats.cont} label="Activos" />
+        <StatCard title="Clientes" icon="👥" value={stats.clientes} label="Totales" />
+        <StatCard 
+          title="Ingresos" 
+          icon="💰" 
+          value={`$${ingresos.toLocaleString('es-CO')}`} 
+          label="Total generado" 
+          isMoney 
+        />
       </div>
-
     </div>
   );
 };
+
+// Componente interno para no repetir código de las tarjetas
+const StatCard = ({ title, icon, value, label, isMoney }) => (
+  <div className="card-stat">
+    <div className="card-header">
+      <h3>{icon} {title}</h3>
+    </div>
+    <p className={`number ${isMoney ? 'money' : ''}`}>{value}</p>
+    <span className="label">{label}</span>
+  </div>
+);
 
 export default Dashboard;

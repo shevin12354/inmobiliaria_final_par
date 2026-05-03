@@ -8,6 +8,8 @@ import PropietarioCRUD from './components/PropietarioCRUD';
 import UbicacionesCRUD from './components/UbicacionesCRUD.jsx';
 import Contratos from './components/Contratos.jsx';
 import Dashboard from './components/Dashboard';
+import Mantenimiento from './components/Mantenimiento';
+
 
 import './styles/App.css';
 import './styles/index.css';
@@ -49,6 +51,7 @@ function App() {
 
                 <button onClick={() => setVista('ubicaciones')}>Ubicaciones</button>
                 <button onClick={() => setVista('contratos')}>Contratos</button>
+                <button onClick={() => setVista('mantenimiento')}>Mantenimientos</button>
               </nav>
 
               <button
@@ -77,7 +80,7 @@ function App() {
                 {vista === 'propietarios' && <PropietarioCRUD />}
                 {vista === 'ubicaciones' && <UbicacionesCRUD />}
                 {vista === 'contratos' && <Contratos />}
-
+                {vista === 'mantenimiento' && <Mantenimiento />}
               </div>
 
             </div>

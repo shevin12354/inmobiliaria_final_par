@@ -13,6 +13,177 @@ const dbConfig = {
     password: '132',
     connectString: 'localhost/xe'
 };
+// ==========================================
+// 1. ENDPOINTS PARA MANTENIMIENTO
+// ==========================================
+
+// Obtener todos
+app.get('/mantenimiento', async (req, res) => {
+    let connection;
+    try {
+        connection = await oracledb.getConnection(dbConfig);
+        const result = await connection.execute(
+            `SELECT * FROM MANTENIMIENTO ORDER BY IDMANTENIMIENTO DESC`,
+            [], { outFormat: oracledb.OUT_FORMAT_OBJECT }
+        );
+        res.json(result.rows);
+    } catch (err) { res.status(500).send(err.message); }
+    finally { if (connection) await connection.close(); }
+});
+
+// Registrar (Orden: ID, Apt, Emp, Fecha, Desc, Valor)
+app.post('/mantenimiento', async (req, res) => {
+    const { idMantenimiento, idApartamento, idEmpleado, fecha, descripcion, valor } = req.body;
+    let connection;
+    try {
+        connection = await oracledb.getConnection(dbConfig);
+        await connection.execute(
+            `INSERT INTO MANTENIMIENTO (IDMANTENIMIENTO, IDAPARTAMENTO, IDEMPLEADO, FECHA, DESCRIPCION, VALOR) 
+             VALUES (:idMantenimiento, :idApartamento, :idEmpleado, TO_DATE(:fecha, 'YYYY-MM-DD'), :descripcion, :valor)`,
+            { idMantenimiento, idApartamento, idEmpleado, fecha, descripcion, valor },
+            { autoCommit: true }
+        );
+        res.send("Mantenimiento registrado con éxito");
+    } catch (err) { res.status(500).send("Error Oracle: " + err.message); }
+    finally { if (connection) await connection.close(); }
+});
+
+// Actualizar
+app.put('/mantenimiento/:id', async (req, res) => {
+    const { id } = req.params;
+    const { idApartamento, idEmpleado, fecha, descripcion, valor } = req.body;
+    let connection;
+    try {
+        connection = await oracledb.getConnection(dbConfig);
+        await connection.execute(
+            `UPDATE MANTENIMIENTO 
+             SET IDAPARTAMENTO = :idApartamento, 
+                 IDEMPLEADO = :idEmpleado, 
+                 FECHA = TO_DATE(:fecha, 'YYYY-MM-DD'), 
+                 DESCRIPCION = :descripcion, 
+                 VALOR = :valor 
+             WHERE IDMANTENIMIENTO = :id`,
+            { idApartamento, idEmpleado, fecha, descripcion, valor, id },
+            { autoCommit: true }
+        );
+        res.send("Mantenimiento actualizado correctamente");
+    } catch (err) { res.status(500).send(err.message); }
+    finally { if (connection) await connection.close(); }
+});
+
+// ELIMINAR MANTENIMIENTO
+app.delete('/mantenimiento/:id', async (req, res) => {
+    const { id } = req.params;
+    let connection;
+
+    try {
+        connection = await oracledb.getConnection(dbConfig);
+        
+        // Ejecutamos el borrado
+        const result = await connection.execute(
+            `DELETE FROM MANTENIMIENTO WHERE IDMANTENIMIENTO = :id`,
+            [id],
+            { autoCommit: true }
+        );
+
+        if (result.rowsAffected === 0) {
+            res.status(404).send("No se encontró el mantenimiento con ese ID");
+        } else {
+            res.send("Mantenimiento eliminado con éxito");
+        }
+
+    } catch (err) {
+        // Manejo de error específico de Oracle para llaves foráneas (ORA-02292)
+        if (err.errorNum === 2292) {
+            res.status(400).send("No se puede eliminar: Este mantenimiento ya tiene pagos registrados.");
+        } else {
+            res.status(500).send("Error al eliminar: " + err.message);
+        }
+    } finally {
+        if (connection) {
+            try {
+                await connection.close();
+            } catch (closeErr) {
+                console.error(closeErr);
+            }
+        }
+    }
+});
+
+// ==========================================
+// 2. ENDPOINTS PARA PAGO MANTENIMIENTO
+// ==========================================
+
+// Obtener todos
+app.get('/pago-mantenimiento', async (req, res) => {
+    let connection;
+    try {
+        connection = await oracledb.getConnection(dbConfig);
+        const result = await connection.execute(
+            `SELECT * FROM PAGOMANTENIMIENTO ORDER BY IDPAGOMANTENIMIENTO DESC`,
+            [], { outFormat: oracledb.OUT_FORMAT_OBJECT }
+        );
+        res.json(result.rows);
+    } catch (err) { res.status(500).send(err.message); }
+    finally { if (connection) await connection.close(); }
+});
+
+// Registrar (Orden: ID Pago, ID Mant, ID Forma, Fecha, Valor)
+app.post('/pago-mantenimiento', async (req, res) => {
+    const { idPagoMntenimiento, idMantenimiento, idFormaPago, fechaPago, valor } = req.body;
+    let connection;
+    try {
+        connection = await oracledb.getConnection(dbConfig);
+        await connection.execute(
+            `INSERT INTO PAGOMANTENIMIENTO (IDPAGOMANTENIMIENTO, IDMANTENIMIENTO, IDFORMAPAGO, FECHAPAGO, VALOR) 
+             VALUES (:idPagoMntenimiento, :idMantenimiento, :idFormaPago, TO_DATE(:fechaPago, 'YYYY-MM-DD'), :valor)`,
+            { idPagoMntenimiento, idMantenimiento, idFormaPago, fechaPago, valor },
+            { autoCommit: true }
+        );
+        res.send("Pago de mantenimiento registrado");
+    } catch (err) { res.status(500).send("Error Oracle: " + err.message); }
+    finally { if (connection) await connection.close(); }
+});
+
+// Actualizar Pago
+app.put('/pago-mantenimiento/:id', async (req, res) => {
+    const { id } = req.params;
+    const { idMantenimiento, idFormaPago, fechaPago, valor } = req.body;
+    let connection;
+    try {
+        connection = await oracledb.getConnection(dbConfig);
+        await connection.execute(
+            `UPDATE PAGOMANTENIMIENTO 
+             SET IDMANTENIMIENTO = :idMantenimiento, 
+                 IDFORMAPAGO = :idFormaPago, 
+                 FECHAPAGO = TO_DATE(:fechaPago, 'YYYY-MM-DD'), 
+                 VALOR = :valor 
+             WHERE IDPAGOMANTENIMIENTO = :id`,
+            { idMantenimiento, idFormaPago, fechaPago, valor, id },
+            { autoCommit: true }
+        );
+        res.send("Pago actualizado");
+    } catch (err) { res.status(500).send(err.message); }
+    finally { if (connection) await connection.close(); }
+});
+
+app.delete('/pago-mantenimiento/:id', async (req, res) => {
+    const { id } = req.params;
+    let connection;
+    try {
+        connection = await oracledb.getConnection(dbConfig);
+        await connection.execute(
+            `DELETE FROM PAGOMANTENIMIENTO WHERE IDPAGOMANTENIMIENTO = :id`,
+            [id],
+            { autoCommit: true }
+        );
+        res.send("Pago eliminado con éxito");
+    } catch (err) {
+        res.status(500).send(err.message);
+    } finally {
+        if (connection) await connection.close();
+    }
+});
 
 // --- OBTENER INGRESOS TOTALES ---
 app.get('/ingresos', async (req, res) => {
